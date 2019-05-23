@@ -1,5 +1,5 @@
 # KU_DC
-Konkuk University Data Communication Sources.
+Konkuk University Data Communication Class Sources.
 
  
 
