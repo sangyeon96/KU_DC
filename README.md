@@ -18,8 +18,9 @@ Differential Manchester Encoding의 경우, 이전 신호의 영향을 받는다
 Main. java는 아래와 같이 0과 1로 이루어진 임의의 값을 입력 받고, ME객체와 DME객체를 생성하여 입력 받은 값의 Manchester Encoding, Differential Manchester Encoding의 결과를 그래프를 출력한다.
 
 출력 결과는 다음과 같다.(임의의 값으로 16비트를 넣어주었다)
-
-<img src="https://github.com/sangyeon96/KU_DC/tree/master/img/encoding_output.png" width="90%"></img>
+<div>
+<img width="200" src="https://github.com/sangyeon96/KU_DC/tree/master/img/encoding_output.png">
+</div>
 
 ## 과제 2: Error Control
 
