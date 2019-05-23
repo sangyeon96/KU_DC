@@ -1,47 +1,31 @@
 # KU_DC
 Konkuk University Data Communication Class Sources.
 
- 
-
 ## 과제 1: Encoding
 
 우선 코드는 Manchester Encoding을 구현한 **ME.java**, Differential Manchester Encoding을 구현한 **DME.java**와 그 두 클래스를 객체로 선언하여 그래프를 출력하는 **Main.java**로 이루어져 있다.
 
- 
-
-###ME.java
+### ME.java
 
 우선 Manchester Encoding은 간단하게 0은 High to Low(-┐_)로 나타내고, 1은 Low to High(_┌-)로 나타낸다. 그러므로 입력 받은 signal문자열에서 for문으로 문자를 하나씩 받아 0이냐 1이냐에 따라 High to Low 또는 Low to High로 나타낸다.
 
- 
-
-###DME.java
+### DME.java
 
 Differential Manchester Encoding의 경우, 이전 신호의 영향을 받는다. 현재신호가 0인 경우 이전 신호에서 변화 없음, 1인 경우 이전 신호에서 변화를 준다(변화라 함은 High to Low -> Low to High 또는 Low to High -> High to Low). 그래서 ME.java에서 추가로 boolean형 변수 currentLevelHigh를 추가하였다. currentLevelHigh값이 true면 이전 신호가 Low to High였다는 것이고, false면 이전 신호가 High to Low였다는 것이다. currentLevelHigh값에 따라 현재 신호가 0이면 이전 신호 그대로 출력하고, 1이면 이전 신호의 반대로 출력한다.
 
- 
-
-###Main.java
+### Main.java
 
 Main. java는 아래와 같이 0과 1로 이루어진 임의의 값을 입력 받고, ME객체와 DME객체를 생성하여 입력 받은 값의 Manchester Encoding, Differential Manchester Encoding의 결과를 그래프를 출력한다.
 
- 
-
 출력 결과는 다음과 같다.(임의의 값으로 16비트를 넣어주었다)
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image005.png)
-
-
+![1_output](/Users/Sangyeon/GitHub/KU_DC/img/1_output.png)
 
 ## 과제 2: Error Control
 
 소스 파일은 **Sender.java**와 **Receiver.java**로 이루어져 있다. 각 파일은 StopAndWait함수, GoBackN함수, main함수로 이루어져 있다.
 
-
-
 우선 Sender.java와 Receiver.java의 main 함수에서 Stop&Wait방식(1번)으로 실행할 지, Go Back N방식(2번)으로 실행할 지 입력한다. 입력한 값이 1번과 2번이 아니면 Wrong Input임을 알려주고, Sender.java와 Receiver.java에 같은 번호를 입력하지 않을 시, 포트번호가 달라 Connection refused된다.
-
- 
 
 ### Stop & Wait 방식(1번을 입력한 경우)
 
@@ -51,8 +35,6 @@ StopAndWait함수는 매개변수로 포트번호인 port, 보내려는 프레�
 
  **Receiver.java**는 Sender가 보낸 프레임의 sequenceNum을 받고, 그 sequenceNum을 ACKNum으로 변경해 다시 전송한다. Receiver는 앞에서 언급했다시피 in.readUTF를 하기 위해 ACKLostNum에 대한 정보는 가지고 있지만, frameLostNum에 대한 정보는 가지고 있지 않다. Receiver입장에서 보면 Sender에서 sequenceNum == frameLostNum인 경우 frame이 아예 오지 않았으므로 ACK전송을 하지 않을테고, 그러면 Sender입장에선 ACK가 오지 않았으므로 transmissionFail가 true가 되어 재전송을 하는 것이다.
 
- 
-
 ### Go Back N 방식(2번을 입력한 경우)
 
 GoBackN함수는 StopAndWait함수와 마찬가지로 매개변수로 포트번호인 port, 보내려는 프레임 개수인 frameSize, 프레임 전송이 실패될 번호인 frameLostNum, ACK 전송이 실패될 번호인 ACKLostNum을 가지고 있다.
@@ -61,69 +43,67 @@ GoBackN함수는 StopAndWait함수와 마찬가지로 매개변수로 포트번�
 
  **Receiver.java**는 sequenceNum과 frameLostNum이 같거나 sequenceNum과 ACKLostNum이랑 같은 경우(오류가 검출될 경우), 그 이전 ACK를 보내고, discardNum으로 버릴 프레임 개수를 계산하여 순서에 맞는 프레임번호가 올 때까지 그 전에 온 프레임들을 버린다.
 
- 
-
 ### Stop&Wait 출력 결과
 
 출력 결과는 frameSize = 30인 경우와 50인 경우로 실행해보았다.
 
-1)    frameSize = 30, frameLostNum = 13, ACKLostNum = 19
+1) frameSize = 30, frameLostNum = 13, ACKLostNum = 19
 
 아래는 Frame Lost가 13에서 일어나고, ACK Lost가 19에서 일어날 시의 Sender.java 출력 결과 일부 스크린샷이다.
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image002.png)
+![stop&wait_framesize30_sender1](/Users/Sangyeon/GitHub/KU_DC/img/stop&wait_frame size30_sender(1).png)
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image001.png)
+![stop&wait_framesize30_sender2](/Users/Sangyeon/GitHub/KU_DC/img/stop&wait_frame size30_sender(2).png)
 
 Receiver.java 출력 결과를 통해 1부터 30까지 제대로 받았음을 확인할 수 있다.
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image003.png)
+![stop&wait_framesize30_receiver](/Users/Sangyeon/GitHub/KU_DC/img/stop&wait_frame size 30_receiver.png)
 
 
 
-2)    frameSize = 50, frameLostNum = 25, ACKLostNum = 44
+2) frameSize = 50, frameLostNum = 25, ACKLostNum = 44
 
 Sender.java 출력 결과 일부
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image004.png)
+![stop&wait_framesize50_sender1](/Users/Sangyeon/GitHub/KU_DC/img/stop&wait_frame size 50_sender(1).png)
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image006.png)
+![stop&wait_framesize50_sender2](/Users/Sangyeon/GitHub/KU_DC/img/stop&wait_frame size 50_sender(2).png)
 
 Receiver.java 출력 결과
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image005.png)
+![stop&wait_framesize50_receiver](/Users/Sangyeon/GitHub/KU_DC/img/stop&wait_frame size 50_receiver.png)
 
  
 
 ### Go Back N 출력 결과
 
-1)    frameSize = 30, frameLostNum = 11, ACKLostNum = 23
+1) frameSize = 30, frameLostNum = 11, ACKLostNum = 23
 
 Sender.java 출력 결과 
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image007.png)
+![gobackN_framesize30_sender1](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 30_sender(1).png)
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image009.png)
+![gobackN_framesize30_sender2](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 30_sender(2).png)
 
 Receiver.java 출력 결과
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image008.png)
+![gobackN_framesize30_receiver](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 30_receiver.png)
 
  
 
-2)    frameSize = 50, frameLostNum = 22, ACKLostNum = 37
+2) frameSize = 50, frameLostNum = 22, ACKLostNum = 37
 
 Sender.java 출력 결과 일부
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image013.png)
+![gobackN_framesize50_sender1](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 50_sender(1).png)
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image012.png)
+![gobackN_framesize50_sender2](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 50_sender(2).png)
 
 Receiver.java 출력 결과 일부
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image011.png)
+![gobackN_framesize50_receiver1](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 50_receiver(1).png)
 
-![img](file:////Users/Sangyeon/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image010.png)
+![gobackN_framesize50_receiver2](/Users/Sangyeon/GitHub/KU_DC/img/gobackN_frame size 50_receiver(2).png)
 
 -----
 
