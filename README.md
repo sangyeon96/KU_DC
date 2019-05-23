@@ -19,7 +19,7 @@ Main. java는 아래와 같이 0과 1로 이루어진 임의의 값을 입력 �
 
 출력 결과는 다음과 같다.(임의의 값으로 16비트를 넣어주었다)
 
-![1_output](/Users/Sangyeon/GitHub/KU_DC/img/1_output.png)
+![encoding_output](https://github.com/sangyeon96/KU_DC/tree/master/img/encoding_output)
 
 ## 과제 2: Error Control
 
